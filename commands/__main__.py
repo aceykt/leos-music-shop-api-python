@@ -3,6 +3,7 @@ import traceback
 import typer
 
 from commands.seed_bass_guitars import seed_bass_guitars
+from commands.seed_manufacturers import seed_manufacturers
 from dependencies.database import database_engine
 from dependencies.models.base_model import DeclarativeBase
 
@@ -14,6 +15,7 @@ def recreate_base():
         logger.info("Recreating base...")
         DeclarativeBase.metadata.drop_all(database_engine)
         DeclarativeBase.metadata.create_all(database_engine)
+        seed_manufacturers()
         seed_bass_guitars()
     except Exception as e:
         logger.error(e)
