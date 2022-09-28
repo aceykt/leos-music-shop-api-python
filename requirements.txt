@@ -1,4 +1,4 @@
 fastapi
 sqlalchemy
-typer
+typer[all]
 uvicorn[standard]

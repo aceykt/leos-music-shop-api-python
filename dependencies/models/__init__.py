@@ -1,0 +1,1 @@
+from dependencies.models.bass_guitar import BassGuitar
