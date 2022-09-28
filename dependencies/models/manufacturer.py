@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
 
 from dependencies.models.base_model import DeclarativeBase
 
@@ -7,3 +8,5 @@ class Manufacturer(DeclarativeBase):
     id = Column(Integer, primary_key=True, index=True)
 
     model = Column(String(50), nullable=False, index=True)
+
+    bass_guitars = relationship("BassGuitar", back_populates="manufacturer")

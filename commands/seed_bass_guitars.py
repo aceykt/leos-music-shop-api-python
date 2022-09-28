@@ -6,7 +6,7 @@ def seed_bass_guitars():
     session = SessionLocal()
     
     bass_guitars = [
-        BassGuitar(id=1, model="Fender Jazz 5 String")
+        BassGuitar(id=1, manufacturer_id=1, model="Fender Jazz 5 String")
     ]
 
     for bass_guitar in bass_guitars:
