@@ -14,4 +14,6 @@ class GuestOrder(DeclarativeBase, BaseOrder):
     address_second_line = Column(String(100), nullable=False)
     city = Column(String(50), nullable=False)
     state = Column(String(50), nullable=False)
-    zip_code = Column(Integer, index=True)
+    zip_code = Column(Integer)
+
+    guest_order_bass_guitars = relationship("GuestOrderBassGuitar", back_populates="guest_order")

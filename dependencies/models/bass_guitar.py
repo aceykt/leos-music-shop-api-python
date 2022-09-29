@@ -12,4 +12,5 @@ class BassGuitar(DeclarativeBase):
 
     manufacturer = relationship("Manufacturer", back_populates="bass_guitars")
 
+    bass_guitar_guest_orders = relationship("GuestOrderBassGuitar", back_populates="bass_guitar")
     bass_guitar_orders = relationship("OrderBassGuitar", back_populates="bass_guitar")
