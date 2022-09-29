@@ -11,3 +11,5 @@ class BassGuitar(DeclarativeBase):
     model = Column(String(150), nullable=False, index=True)
 
     manufacturer = relationship("Manufacturer", back_populates="bass_guitars")
+
+    bass_guitar_orders = relationship("OrderBassGuitar", back_populates="bass_guitar")

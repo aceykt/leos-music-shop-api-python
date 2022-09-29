@@ -26,3 +26,10 @@ def sign_jwt(info: str) -> Dict[str, str]:
 def decode_jwt(token: str) -> str:
     decoded_token = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM], audience=JWT_AUDIENCE, issuer=JWT_ISSUER)
     return jwe.decrypt(decoded_token['sub'], JWE_SECRET).decode("utf-8")
+
+
+def validate_jwt_format(token: str) -> str | None:
+    if not token.startswith("Bearer"):
+        return None
+
+    return token.replace("Bearer ", "")
