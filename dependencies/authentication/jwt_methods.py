@@ -21,6 +21,7 @@ def sign_jwt(info: str) -> Dict[str, str]:
     token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
     return { "access_token": token }
 
+
 def decode_jwt(token: str) -> str:
     decoded_token = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM], audience=JWT_AUDIENCE, issuer=JWT_ISSUER)
     return jwe.decrypt(decoded_token['sub'], JWE_SECRET).decode("utf-8")
