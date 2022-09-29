@@ -12,6 +12,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 logger = logging.getLogger("jwt_methods")
 logger.setLevel(logging.DEBUG)
 
+
 def get_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     try:
         token_id = int(jwt_methods.decode_jwt(token))
@@ -21,6 +22,38 @@ def get_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db))
 
         if user is not None:
             return user
+
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    except Exception as e:
+        logger.debug(e)
+        raise e
+
+
+def get_admin_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    try:
+        token_id = int(jwt_methods.decode_jwt(token))
+        admin = db.query(models.Admin) \
+            .filter(models.Admin.admin_id == token_id) \
+            .one_or_none()
+
+        if admin is not None:
+            return admin
+
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    except Exception as e:
+        logger.debug(e)
+        raise e
+
+
+def get_customer_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    try:
+        token_id = int(jwt_methods.decode_jwt(token))
+        customer = db.query(models.Customer) \
+            .filter(models.Customer.customer_id == token_id) \
+            .one_or_none()
+
+        if customer is not None:
+            return customer
 
         raise HTTPException(status_code=401, detail="Not authenticated")
     except Exception as e:

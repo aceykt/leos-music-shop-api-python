@@ -17,6 +17,12 @@ Make sure you have all the requirements installed:
 pip install -r requirements.txt
 ```
 
+Make sure you have a database created and initialized with data:
+
+```sh
+python -m commands
+```
+
 Then run it:
 
 ```sh

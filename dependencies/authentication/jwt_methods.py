@@ -9,6 +9,7 @@ JWT_ALGORITHM = 'HS512'
 JWT_AUDIENCE = 'LeosAudience'
 JWT_ISSUER = 'br.com.segment.leo'
 
+
 def sign_jwt(info: str) -> Dict[str, str]:
     timestamp = int(time.time())
     payload = {

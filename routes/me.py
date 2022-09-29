@@ -11,4 +11,4 @@ router = APIRouter(
 
 @router.get("", status_code=status.HTTP_200_OK)
 async def get_my_information(user: models.User = Depends(get_user)):
-    return schemas.User.from_orm(user)
+    return schemas.UserSchema.from_orm(user)
