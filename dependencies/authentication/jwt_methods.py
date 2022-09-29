@@ -11,7 +11,7 @@ JWT_ISSUER = 'br.com.segment.leo'
 
 
 def sign_jwt(info: str) -> Dict[str, str]:
-    timestamp = int(time.time())
+    timestamp = int(time())
     payload = {
         "iss": JWT_ISSUER,
         "aud": JWT_AUDIENCE,

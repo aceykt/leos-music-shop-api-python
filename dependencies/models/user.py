@@ -13,13 +13,22 @@ class User(DeclarativeBase):
     user_type = Column(String(50))
     password_hash = Column(String(128), nullable=False)
 
-    def verify_password(plain_password, hashed_password):
-        return pwd_context.verify(plain_password, hashed_password)
+    def verify_password(self, plain_password):
+        return pwd_context.verify(plain_password, self.password_hash)
 
-    def get_password_hash(password):
-        return pwd_context.hash(password)
+    def get_password_hash(self, password):
+        self.password_hash = pwd_context.hash(password)
 
     __mapper_args__ = {
         'polymorphic_identity': 'user',
         'polymorphic_on': user_type
     }
+
+    def __init__(self, id=None, first_name=None, last_name=None, email=None, password=None):
+        self.id = id
+        self.first_name = first_name
+        self.last_name = last_name
+        self.email = email
+
+        if password:
+            self.get_password_hash(password)
