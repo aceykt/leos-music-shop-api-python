@@ -23,7 +23,7 @@ def get_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db))
         if user is not None:
             return user
 
-        raise HTTPException(status_code=401, detail="Not authenticated")
+        raise HTTPException(status_code=403, detail="Not authorized")
     except Exception as e:
         logger.debug(e)
         raise e
@@ -39,7 +39,7 @@ def get_admin_user(token: str = Depends(oauth2_scheme), db: Session = Depends(ge
         if admin is not None:
             return admin
 
-        raise HTTPException(status_code=401, detail="Not authenticated")
+        raise HTTPException(status_code=403, detail="Not authorized")
     except Exception as e:
         logger.debug(e)
         raise e
@@ -55,7 +55,7 @@ def get_customer_user(token: str = Depends(oauth2_scheme), db: Session = Depends
         if customer is not None:
             return customer
 
-        raise HTTPException(status_code=401, detail="Not authenticated")
+        raise HTTPException(status_code=403, detail="Not authorized")
     except Exception as e:
         logger.debug(e)
         raise e

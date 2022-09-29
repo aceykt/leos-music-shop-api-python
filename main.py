@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from routes import auth, bass_guitars, manufacturers, orders
+from routes import auth, bass_guitars, manufacturers, me, orders
 
 app = FastAPI(
     title="Leo's Music Shop API",
@@ -18,6 +18,7 @@ app.add_middleware(
 )
 
 app.include_router(auth.router)
+app.include_router(me.router)
 app.include_router(bass_guitars.router)
 app.include_router(manufacturers.router)
 app.include_router(orders.router)

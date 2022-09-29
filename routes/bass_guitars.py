@@ -10,13 +10,15 @@ router = APIRouter(
     responses={404: {"description" : "Not found"}}
 )
 
+
 @router.get("", status_code=status.HTTP_200_OK)
 async def get_all_bass_guitars(db: Session = Depends(get_db)):
     bass_guitars = db.query(models.BassGuitar).all()
     return bass_guitars
 
+
 @router.get("/{id}")
-def read_item(id: int, db: Session = Depends(get_db)):
+def get_one_bass_guitar(id: int, db: Session = Depends(get_db)):
     bass_guitar = db.query(models.BassGuitar) \
         .options(joinedload(models.BassGuitar.manufacturer)) \
         .filter(models.BassGuitar.id == id) \

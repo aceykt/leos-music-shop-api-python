@@ -9,6 +9,7 @@ router = APIRouter(
     responses={404: {"description" : "Not found"}}
 )
 
+
 @router.get("", status_code=status.HTTP_200_OK)
 async def get_my_information(user: models.User = Depends(get_user)):
     return schemas.UserSchema.from_orm(user)
