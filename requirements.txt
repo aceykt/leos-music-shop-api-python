@@ -1,6 +1,7 @@
 bcrypt
 fastapi
 passlib
+pyhumps
 python-decouple
 python-jose[cryptography]
 python-multipart

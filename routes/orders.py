@@ -1,4 +1,4 @@
-import json
+import humps
 
 from typing import Union
 from fastapi import APIRouter, Depends, Header, status, HTTPException
@@ -91,7 +91,7 @@ def place_new_order(
 
         analytics_instance.track(f"guest-order-{guest_order.id}", 
             'Guest Order Placed', 
-            guest_order_dict
+            humps.camelize(guest_order_dict)
         )
 
         return guest_order
