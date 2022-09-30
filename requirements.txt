@@ -4,6 +4,7 @@ passlib
 python-decouple
 python-jose[cryptography]
 python-multipart
+segment-analytics-python
 sqlalchemy
 typer[all]
 uvicorn[standard]

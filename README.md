@@ -2,6 +2,8 @@
 
 This is the coolest API for Leo's Music Shop.
 
+For now this API only sells bass guitars. 
+
 ## Running
 
 First define a `.env` file with two variables, like below:
@@ -9,6 +11,7 @@ First define a `.env` file with two variables, like below:
 ```ini
 JWT_SECRET="abcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd"
 JWE_SECRET="abcdabcdabcdabcd"
+SEGMENT_WRITE_ID="your-segment-write-id"
 ```
 
 Make sure you have all the requirements installed:
