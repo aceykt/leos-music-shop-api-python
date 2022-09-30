@@ -34,7 +34,7 @@ def get_one_order(id: int, db: Session = Depends(get_db), user: models.Admin = D
 
 @router.post("")
 def place_new_order(
-    # request: schemas.OrderSchema,
+    request: schemas.OrderSchema,
     db: Session = Depends(get_db),
     authorization: Union[str, None] = Header(default=None)
 ):
@@ -44,8 +44,34 @@ def place_new_order(
         if token is None:
             raise HTTPException(status_code=status.HTTP_417_EXPECTATION_FAILED, detail=f"Invalid authentication header")
         token_data: str = jwt_methods.decode_jwt(token)
-        customer: models.Customer = get_customer_user(token_data)
+        customer = get_customer_user(token_data)
 
-    
+    if not customer:
+        if request.guest_user_data is None:
+            raise HTTPException(status_code=status.HTTP_424_FAILED_DEPENDENCY, detail=f"Customer data not provided")
+
+        guest_order: models.GuestOrder = models.GuestOrder(
+            first_name = request.guest_user_data.first_name,
+            last_name = request.guest_user_data.last_name,
+            email = request.guest_user_data.email,
+            address_first_line = request.guest_user_data.address_first_line,
+            address_second_line = request.guest_user_data.address_second_line,
+            city = request.guest_user_data.city,
+            state = request.guest_user_data.state,
+            zip_code = request.guest_user_data.zip_code
+        )
+
+        guest_order.guest_order_bass_guitars = []
+        for bass_order in request.bass_guitars:
+            guest_order.guest_order_bass_guitars.append(models.GuestOrderBassGuitar(
+                bass_guitar_id = bass_order.bass_guitar_id,
+                quantity = bass_order.quantity
+            ))
+
+        db.add(guest_order)
+        db.commit()
+        db.refresh(guest_order)
+
+        return guest_order
 
     return {'authorization': authorization}

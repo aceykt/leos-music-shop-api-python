@@ -5,9 +5,13 @@ from dependencies.models.base_model import DeclarativeBase
 
 class GuestOrderBassGuitar(DeclarativeBase):
     __tablename__ = "guest_orders_bass_guitars"
+    
     id = Column(Integer, primary_key=True, index=True)
     bass_guitar_id = Column(Integer, ForeignKey("bass_guitars.id"))
     guest_order_id = Column(Integer, ForeignKey("guest_orders.id"))
+
+    quantity = Column(Integer, nullable=False)
+    historical_price = Column(Integer, nullable=True)
 
     __table_args__ = (UniqueConstraint('bass_guitar_id', 'guest_order_id', name='iuq_guest_orders_bass_guitars'),)
 

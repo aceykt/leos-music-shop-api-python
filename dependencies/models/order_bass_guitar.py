@@ -9,6 +9,9 @@ class OrderBassGuitar(DeclarativeBase):
     bass_guitar_id = Column(Integer, ForeignKey("bass_guitars.id"))
     order_id = Column(Integer, ForeignKey("orders.id"))
 
+    quantity = Column(Integer, nullable=False)
+    historical_price = Column(Integer, nullable=True)
+
     __table_args__ = (UniqueConstraint('bass_guitar_id', 'order_id', name='iuq_orders_bass_guitars'),)
 
     bass_guitar = relationship("BassGuitar", back_populates="bass_guitar_orders")
