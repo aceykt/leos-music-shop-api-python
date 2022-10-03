@@ -6,7 +6,7 @@ from sqlalchemy.orm import joinedload, Session
 
 from dependencies import models, schemas
 from dependencies.authentication import jwt_methods
-from dependencies.authentication.user_methods import get_admin_user, get_customer_user
+from dependencies.authentication.user_methods import get_customer_user, get_user
 from dependencies.database import get_db
 from dependencies.misc import deep_dict
 from dependencies.segment import analytics_instance
@@ -19,16 +19,30 @@ router = APIRouter(
 
 
 @router.get("", status_code=status.HTTP_200_OK)
-async def get_all_orders(db: Session = Depends(get_db), user: models.Admin = Depends(get_admin_user)):
-    orders = db.query(models.Order).all()
+async def get_all_orders(db: Session = Depends(get_db), user: models.User = Depends(get_user)):
+    order_query = db.query(models.Order)
+
+    if user.user_type == "customer":
+        order_query = order_query.filter(models.Order.customer_id == user.id)
+
+    orders = order_query.all()
     return orders
 
 
 @router.get("/{id}")
-def get_one_order(id: int, db: Session = Depends(get_db), user: models.Admin = Depends(get_admin_user)):
-    order = db.query(models.Order) \
-        .filter(models.Order.id == id) \
-        .one_or_none()
+def get_one_order(id: int, db: Session = Depends(get_db), user: models.User = Depends(get_user)):
+    order_query = db.query(models.Order) \
+        .options(
+            joinedload(models.Order.order_bass_guitars) \
+            .joinedload(models.OrderBassGuitar.bass_guitar) \
+            .joinedload(models.BassGuitar.manufacturer) \
+        ) \
+        .filter(models.Order.id == id)
+    
+    if user.user_type == "customer":
+        order_query = order_query.filter(models.Order.customer_id == user.id)
+    
+    order = order_query.one_or_none()
 
     if order is None:
         raise HTTPException(
@@ -54,10 +68,17 @@ def _anonymous_order(request: schemas.OrderSchema, db: Session):
 
     guest_order.guest_order_bass_guitars = []
     for bass_order in request.bass_guitars:
-        guest_order.guest_order_bass_guitars.append(models.GuestOrderBassGuitar(
-            bass_guitar_id=bass_order.bass_guitar_id,
-            quantity=bass_order.quantity
-        ))
+        bass_guitar = db.query(models.BassGuitar) \
+            .filter(models.BassGuitar.id == bass_order.bass_guitar_id) \
+            .one()
+
+        guest_order.guest_order_bass_guitars.append(
+            models.GuestOrderBassGuitar(
+                bass_guitar_id=bass_order.bass_guitar_id,
+                quantity=bass_order.quantity,
+                historical_price=bass_guitar.price
+            )
+        )
 
     db.add(guest_order)
     db.commit()
@@ -88,10 +109,15 @@ def _identified_customer_order(request: schemas.OrderSchema, customer: models.Cu
 
     order.order_bass_guitars = []
     for bass_order in request.bass_guitars:
+        bass_guitar = db.query(models.BassGuitar) \
+            .filter(models.BassGuitar.id == bass_order.bass_guitar_id) \
+            .one()
+
         order.order_bass_guitars.append(
             models.OrderBassGuitar(
                 bass_guitar_id=bass_order.bass_guitar_id,
-                quantity=bass_order.quantity
+                quantity=bass_order.quantity,
+                historical_price=bass_guitar.price
             )
         )
 

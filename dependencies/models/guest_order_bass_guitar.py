@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, UniqueConstraint
+from sqlalchemy import Column, ForeignKey, Integer, Numeric, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 from dependencies.models.base_model import DeclarativeBase
@@ -11,7 +11,7 @@ class GuestOrderBassGuitar(DeclarativeBase):
     guest_order_id = Column(Integer, ForeignKey("guest_orders.id"))
 
     quantity = Column(Integer, nullable=False)
-    historical_price = Column(Integer, nullable=True)
+    historical_price = Column(Numeric(10, 2, asdecimal=True), nullable=True)
 
     __table_args__ = (UniqueConstraint('bass_guitar_id', 'guest_order_id', name='iuq_guest_orders_bass_guitars'),)
 

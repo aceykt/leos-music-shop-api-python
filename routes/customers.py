@@ -26,6 +26,7 @@ async def get_all_customers(db: Session = Depends(get_db), user: models.Admin = 
 def get_one_customer(id: int, db: Session = Depends(get_db), user: models.Admin = Depends(get_admin_user)):
     customer = db.query(models.Customer) \
         .options(joinedload(models.Customer.customer_address)) \
+        .options(joinedload(models.Customer.orders)) \
         .filter(models.Customer.customer_id == id) \
         .one_or_none()
 
