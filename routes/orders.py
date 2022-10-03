@@ -101,7 +101,7 @@ def _anonymous_order(request: schemas.OrderSchema, db: Session):
         'email': guest_order.email
     })
 
-    analytics_instance.track(f"guest-order-{guest_order['id']}", 
+    analytics_instance.track(f"guest-order-{guest_order.id}", 
         'Guest Order Placed', 
         humps.camelize(guest_order_dict)
     )

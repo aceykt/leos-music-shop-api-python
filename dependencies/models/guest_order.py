@@ -11,7 +11,7 @@ class GuestOrder(DeclarativeBase, BaseOrder):
     last_name = Column(String(100), nullable=False, index=True)
     email = Column(String(100), nullable=False, index=True)
     address_first_line = Column(String(100), nullable=False)
-    address_second_line = Column(String(100), nullable=False)
+    address_second_line = Column(String(100), nullable=True)
     city = Column(String(50), nullable=False)
     state = Column(String(50), nullable=False)
     zip_code = Column(Integer)

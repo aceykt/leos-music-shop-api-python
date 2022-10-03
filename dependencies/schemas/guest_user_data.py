@@ -7,7 +7,7 @@ class GuestUserDataSchema(BaseModel):
     first_name: str
     last_name: str
     address_first_line: str
-    address_second_line: str
+    address_second_line: Optional[str]
     city: str
     state: str
     zip_code: int
