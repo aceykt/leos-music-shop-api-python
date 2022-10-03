@@ -8,6 +8,13 @@ class Customer(User):
 
     customer_id = Column(Integer, ForeignKey('users.id'), primary_key=True)
 
+    customer_address = relationship(
+        'CustomerAddress', 
+        back_populates='customer',
+        cascade='all, delete-orphan',
+        uselist=False
+    )
+
     orders = relationship("Order", back_populates="customer")
 
     __mapper_args__ = {
