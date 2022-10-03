@@ -13,7 +13,7 @@ logger = logging.getLogger("jwt_methods")
 logger.setLevel(logging.DEBUG)
 
 
-def get_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+def get_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> models.User:
     try:
         token_id = int(jwt_methods.decode_jwt(token))
         user = db.query(models.User) \
@@ -29,7 +29,7 @@ def get_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db))
         raise e
 
 
-def get_admin_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+def get_admin_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> models.Admin:
     try:
         token_id = int(jwt_methods.decode_jwt(token))
         admin = db.query(models.Admin) \
@@ -45,7 +45,7 @@ def get_admin_user(token: str = Depends(oauth2_scheme), db: Session = Depends(ge
         raise e
 
 
-def get_customer_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+def get_customer_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> models.Customer:
     try:
         token_id = int(jwt_methods.decode_jwt(token))
         customer = db.query(models.Customer) \

@@ -36,7 +36,7 @@ def get_one_order(id: int, db: Session = Depends(get_db), user: models.Admin = D
 
     return order
 
-def _anonymous_order(request, db):
+def _anonymous_order(request: schemas.OrderSchema, db: Session):
     if request.guest_user_data is None:
         raise HTTPException(
             status_code=status.HTTP_424_FAILED_DEPENDENCY, detail=f"Customer data not provided")
@@ -73,12 +73,48 @@ def _anonymous_order(request, db):
 
     guest_order_dict = deep_dict(guest_order)
 
-    analytics_instance.track(f"guest-order-{guest_order.id}", 
+    analytics_instance.track(f"guest-order-{guest_order['id']}", 
         'Guest Order Placed', 
         humps.camelize(guest_order_dict)
     )
 
     return guest_order
+
+
+def _identified_customer_order(request: schemas.OrderSchema, customer: models.Customer, db: Session):
+    order: models.Order = models.Order(
+        customer_id=customer.customer_id
+    )
+
+    order.order_bass_guitars = []
+    for bass_order in request.bass_guitars:
+        order.order_bass_guitars.append(
+            models.OrderBassGuitar(
+                bass_guitar_id=bass_order.bass_guitar_id,
+                quantity=bass_order.quantity
+            )
+        )
+
+    db.add(order)
+    db.commit()
+    db.refresh(order)
+
+    order_id = order.id
+
+    order = db.query(models.Order) \
+        .options(joinedload(models.Order.order_bass_guitars) \
+            .joinedload(models.OrderBassGuitar.bass_guitar)) \
+        .filter(models.Order.id == order_id) \
+        .one_or_none()
+
+    order_dict = deep_dict(order)
+
+    analytics_instance.track(customer.customer_id, 
+        'Order Placed', 
+        humps.camelize(order_dict)
+    )
+    
+    return order
 
 
 @router.post("")
@@ -93,11 +129,9 @@ def place_new_order(
         if token is None:
             raise HTTPException(status_code=status.HTTP_417_EXPECTATION_FAILED,
                                 detail=f"Invalid authentication header")
-        token_data: str = jwt_methods.decode_jwt(token)
-        customer = get_customer_user(token_data)
+        customer = get_customer_user(token, db)
 
     if not customer:
         return _anonymous_order(request, db)
 
-    return {'authorization': authorization}
-
+    return _identified_customer_order(request, customer, db)
