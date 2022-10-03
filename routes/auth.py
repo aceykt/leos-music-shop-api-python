@@ -1,15 +1,18 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from dependencies.authentication import jwt_methods
 
-from dependencies.database import get_db
 from dependencies import models, schemas
+from dependencies.authentication import jwt_methods
+from dependencies.database import get_db
+from dependencies.segment import analytics_instance
+
 
 router = APIRouter(
     prefix="/auth",
     tags=["Auth"],
     responses={404: {"description" : "Not found"}}
 )
+
 
 @router.post("", status_code=status.HTTP_202_ACCEPTED)
 async def authentication(body: schemas.AuthSchema, db: Session = Depends(get_db)):
@@ -27,4 +30,7 @@ async def authentication(body: schemas.AuthSchema, db: Session = Depends(get_db)
         raise HTTPException(401, "Not authenticated")
 
     jwt_token_payload = jwt_methods.sign_jwt(str(user.id))
+
+    analytics_instance.identify(user.id, schemas.UserSchema.from_orm(user).__dict__)
+
     return jwt_token_payload

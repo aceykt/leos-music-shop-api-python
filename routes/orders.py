@@ -50,6 +50,7 @@ def get_one_order(id: int, db: Session = Depends(get_db), user: models.User = De
 
     return order
 
+
 def _anonymous_order(request: schemas.OrderSchema, db: Session):
     if request.guest_user_data is None:
         raise HTTPException(
@@ -93,6 +94,12 @@ def _anonymous_order(request: schemas.OrderSchema, db: Session):
         .one_or_none()
 
     guest_order_dict = deep_dict(guest_order)
+
+    analytics_instance.identify(f"guest-user-{guest_order.email}", {
+        'first_name': guest_order.first_name,
+        'last_name': guest_order.last_name,
+        'email': guest_order.email
+    })
 
     analytics_instance.track(f"guest-order-{guest_order['id']}", 
         'Guest Order Placed', 
