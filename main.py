@@ -1,7 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from routes import auth, bass_guitars, guest_orders, manufacturers, me, orders
+from routes import (
+    auth, 
+    bass_guitars, 
+    guest_orders, 
+    manufacturers, 
+    me, 
+    orders,
+    sign_up
+)
 
 app = FastAPI(
     title="Leo's Music Shop API",
@@ -23,6 +31,7 @@ app.include_router(guest_orders.router)
 app.include_router(manufacturers.router)
 app.include_router(me.router)
 app.include_router(orders.router)
+app.include_router(sign_up.router)
 
 @app.get("/")
 def read_root():

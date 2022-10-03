@@ -21,4 +21,17 @@ def do_sign_up(
         email=request.email,
         password=request.password
     )
+
+    customer.customer_address = models.CustomerAddress(
+        address_first_line=request.address_first_line,
+        address_second_line=request.address_second_line,
+        city=request.city,
+        state=request.state,
+        zip_code=request.zip_code
+    )
     
+    db.add(customer)
+    db.commit()
+    db.refresh(customer)
+
+    return schemas.UserSchema.from_orm(customer)
