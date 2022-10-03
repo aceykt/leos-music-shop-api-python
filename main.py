@@ -3,7 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from routes import (
     auth, 
-    bass_guitars, 
+    bass_guitars,
+    customers, 
     guest_orders, 
     manufacturers, 
     me, 
@@ -27,6 +28,7 @@ app.add_middleware(
 
 app.include_router(auth.router)
 app.include_router(bass_guitars.router)
+app.include_router(customers.router)
 app.include_router(guest_orders.router)
 app.include_router(manufacturers.router)
 app.include_router(me.router)
