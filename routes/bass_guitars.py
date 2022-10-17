@@ -13,7 +13,9 @@ router = APIRouter(
 
 @router.get("", status_code=status.HTTP_200_OK)
 async def get_all_bass_guitars(db: Session = Depends(get_db)):
-    bass_guitars = db.query(models.BassGuitar).all()
+    bass_guitars = db.query(models.BassGuitar) \
+        .options(joinedload(models.BassGuitar.manufacturer)) \
+        .all()
     return bass_guitars
 
 
