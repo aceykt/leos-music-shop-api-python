@@ -47,3 +47,10 @@ docker run -dp 8001:80 -e SEGMENT_WRITE_ID="your-segment-write-id" --name leos-m
 ```
 
 This will run the app at port 8001.
+
+## Documentation
+
+There are two documentation systems enabled:
+
+- http://localhost:8000/docs
+- http://localhost:8000/redoc
