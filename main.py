@@ -9,7 +9,8 @@ from routes import (
     manufacturers, 
     me, 
     orders,
-    sign_up
+    sign_up,
+    test
 )
 
 app = FastAPI(
@@ -34,6 +35,7 @@ app.include_router(manufacturers.router)
 app.include_router(me.router)
 app.include_router(orders.router)
 app.include_router(sign_up.router)
+app.include_router(test.router)
 
 @app.get("/")
 def read_root():
